@@ -1,0 +1,11 @@
+FROM ubuntu:latest
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && \
+    apt-get install -y openjdk-11-jdk maven && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* 
+RUN java -version &&mvn -version
+WORKDIR /app
+COPY . /app
+EXPOSE 8080
+RUN ["mvn", "clean", "install"]

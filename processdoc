@@ -1,0 +1,59 @@
+🐳 Node.js Docker Image Optimization Project
+📌 Overview
+
+This project explains the difference between an unoptimized Docker image and an optimized Docker image using Node.js. It shows how Dockerfile design affects image size, performance, and security.
+
+📦 Docker Image Comparison
+
+We created two Docker images:
+
+❌ Unoptimized Image → uses full Node.js setup
+✅ Optimized Image → uses lightweight Alpine setup
+❌ 1. Unoptimized Docker Image
+Dockerfile
+FROM node:18
+
+WORKDIR /app
+
+COPY . .
+
+RUN npm install
+
+EXPOSE 3000
+
+CMD ["npm", "start"]
+🔴 Explanation
+Uses full Node.js (Debian-based) image → large size
+Copies entire project (may include unnecessary files)
+Installs both development and production dependencies
+No optimization or cleanup
+📉 Result
+Large image size (700MB – 1GB+)
+Slow build process
+Not suitable for production
+✅ 2. Optimized Docker Image
+Dockerfile
+FROM node:18-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install --omit=dev
+
+COPY . .
+
+USER node
+
+EXPOSE 3000
+
+CMD ["npm", "start"]
+🟢 Explanation
+Uses lightweight Alpine Linux base image
+Installs only production dependencies (--omit=dev)
+Copies dependency files first (better caching)
+Runs container as non-root user (more secure)
+📉 Result
+Small image size (~100–200MB)
+Faster build and deployment
+Secure and production-ready
